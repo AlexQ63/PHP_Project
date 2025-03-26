@@ -1,0 +1,11 @@
+Penser à faire un minimum de CSS.
+
+Utilisation d'API -> pour ajouter un film à la liste (voir comment faire) 
+: https://developer.themoviedb.org/docs/getting-started
+API qui a une base de donnée de film pour intéragir.
+
+Pour la base de donnée : MariaDB
+
+En désactivant le javascript du site, le site doit marcher.
+
+https://dbdiagram.io/d/678a5e796b7fa355c338bb50
