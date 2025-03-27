@@ -13,6 +13,9 @@
 
 #### 2. Gestion des films
 
+ 	● Avoir un formulaire administrateur pour ajouter, afficher, modifier et supprimer des
+films accessible sur tout le site internet (vous pouvez remplacer cette fonctionnalité
+par une API si vous préférez).
 	● Chaque utilisateur doit pouvoir :
 		○ Ajouter un film à sa watchlist avec les informations suivantes :
 			■ Titre
@@ -45,7 +48,7 @@
 #### 3. Sécurité
 	○ Protéger les pages sensibles par des vérifications d'authentification.
 	○ Utiliser des requêtes préparées pour empêcher les injections SQL.
-	Livrables attendus
+### Livrables attendus
 	● Le code source complet du projet.
 	● Un fichier SQL pour créer la base de données et insérer les données de départ (si
 	nécessaire).
