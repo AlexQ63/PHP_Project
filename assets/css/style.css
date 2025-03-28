@@ -1,0 +1,174 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+li {
+    list-style-type: none;
+}
+
+a {
+    color: #87CEFA;
+    text-decoration: none;
+    font-family: "Agency FB";
+    font-size: 1.5rem;
+}
+
+.navbar {
+    display: flex;
+    padding-top: 2rem;
+    justify-content: center;
+    background: linear-gradient(to bottom, #D2B48C , #4B433A);
+}
+
+.navbar .container{
+    display: flex;
+    justify-content: flex-start;
+    width: 1700px;
+    height: 90px;
+    border-style: hidden;
+    border-radius: 0.5rem;
+    border-width: 5px;
+}
+
+.navbar .container .navbar-logo {
+    height: 75px;
+    width: 75px;
+}
+
+.navbar .container .navbar-homepage {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    width: 1100px;
+    justify-items: end;
+    align-items: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.main-page .container{
+    position: relative;
+    width: 100%;
+    height: 1080px;
+}
+
+.main-page .container .main-picture{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.main-page .container .main-picture::before{
+    background-color: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    z-index: 1;
+}
+
+.main-page .container{
+    position: relative;
+    z-index: 1;
+    font-family: "Graphik-Regular-Web";
+    padding-top: 2rem;
+}
+
+.main-page .container .inside .movie-logo{
+    height: 50px;
+    width: 50px;
+    margin-left: 1rem;
+}
+
+.main-page .container .inside .bigger-text{
+    font-size: 3rem;
+    color: #87CEFA;
+    display: block;
+    width: 1020px;
+    font-weight: bold;
+}
+
+
+.main-page .container .inside .text-pic .text-and-link .text{
+    color: white;
+    font-family: "Agency FB";
+    font-size: 2rem;
+}
+
+.main-page .container .inside{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.main-page .container .inside .text-pic {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.main-page .container .inside .text-pic .pic{
+    position: absolute;
+    display: block;
+    top: 130px;
+    right: 30px;
+    height: 800px;
+    width: 880px;
+    opacity: 0.9;
+    z-index: -1;
+
+}
+
+.main-page .container .inside .text-pic .pic .resize{
+    height: 255px;
+    width: 210px;
+    opacity: 0.7;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.main-page .container .inside .text-pic .pic .column1{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.main-page .container .inside .text-pic .pic .column2{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.main-page .container .inside .text-pic .pic .column3{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.main-page .container .inside .text-pic .text-and-link {
+    position: absolute;
+    display: flex;
+    left: 105px;
+    height: 800px;
+    width: 880px;
+    font-size: 2rem;
+    color: #FFD700;
+    flex-direction: column;
+    justify-content: space-around;
+    z-index: 1;
+}
