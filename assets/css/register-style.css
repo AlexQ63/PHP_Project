@@ -22,6 +22,10 @@ a {
     font-size: 1.5rem;
 }
 
+input, label, p {
+    font-family: "Graphik-Regular-Web";
+}
+
 /* ============================= HEADER ============================= */
 
 .navbar {
@@ -48,7 +52,7 @@ a {
 
 .navbar .container .navbar-homepage {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(2,1fr);
     width: 1100px;
     justify-items: end;
     align-items: center;
@@ -61,122 +65,87 @@ a {
 
 /* ============================= BODY ============================= */
 
-.main-page .container {
+.main-page  {
     position: relative;
     width: 100%;
-    height: 1068px;
-    z-index: 1;
+    height: 896px;
+    z-index: 0;
     font-family: "Graphik-Regular-Web";
-    padding-top: 2rem;
+    background-color: #3A2F23;
 }
 
-.main-page .container .modify-pic {
+.main-page .modify-pic {
     position: absolute;
     top: 0;
-    left: 0;
-    filter: brightness(40%);
+    left: 15%;
+    filter: brightness(70%);
     object-fit: cover;
     z-index: -1;
 }
 
-.main-page .container .modify-pic::before {
+.main-page .modify-pic::before {
     content: "";
     width: 100%;
-    height: 100%;
+    height: 896px;
     position: absolute;
     top: 0;
     left: 0;
     z-index: 0;
 }
 
-.main-page .container .inside .movie-logo {
-    height: 50px;
-    width: 50px;
-    margin-left: 1rem;
-}
-
-.main-page .container .inside .bigger-text {
-    font-size: 3rem;
-    color: #B8C0D9;
-    display: block;
-    width: 1020px;
-    font-weight: bold;
-}
-
-
-.main-page .container .inside .text-pic .text-and-link .text {
-    color: white;
-    font-family: "Agency FB";
-    font-size: 2rem;
-}
-
-.main-page .container .inside {
+.register-form {
+    position: absolute;
+    top: 150px;
+    z-index: 1;
     width: 100%;
-    height: 100%;
+    height: 860px;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
 }
 
-.main-page .container .inside .text-pic {
-    width: 100%;
-    height: 100%;
+.register-form form {
     display: flex;
+    box-sizing: border-box;
+    width: 30%;
+    height: 100%;
     flex-direction: column;
     justify-content: center;
 }
 
-.main-page .container .inside .text-pic .pic {
-    position: absolute;
-    display: block;
-    top: 130px;
-    right: 30px;
-    height: 800px;
-    width: 880px;
-    opacity: 0.9;
-    z-index: 0;
+.register-form .user {
+    background-color: #DCDCDC;
+    border-radius: 8px;
+    box-sizing: border-box;
+    border-style: hidden;
+    height: 60px;
+    font-size: 2.5rem;
+    margin: 2rem;
+    line-height: 1rem;
 }
 
-.main-page .container .inside .text-pic .pic .resize {
-    height: 255px;
-    width: 210px;
-    opacity: 0.7;
-    padding-bottom: 4px;
-    padding-top: 4px;
-    overflow: hidden;
-    border-radius: 10px;
+.register-form .remember {
+    border-radius: 8px;
+    box-sizing: border-box;
+    height: 60px;
+    font-size: 2.5rem;
+    margin: 2rem;
+    color: #E4C7AB;
 }
 
-.main-page .container .inside .text-pic .pic .column1 {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 4px;
+.register-form .checkbox {
+    height: 40%;
+    width: 40%;
+    background-color: #B8C0D9;
 }
 
-.main-page .container .inside .text-pic .pic .column2 {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 4px;
-}
+.register-form .submit {
+    height: 5%;
+    width: 22%;
+    margin: 2rem;
+    background-color: #D2B48C;
+    border-radius: 8px;
 
-.main-page .container .inside .text-pic .pic .column3 {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 4px;
-}
-
-.main-page .container .inside .text-pic .text-and-link {
-    position: absolute;
-    display: flex;
-    left: 105px;
-    height: 800px;
-    width: 880px;
-    font-size: 2rem;
-    color: #E4C7AB    ;
-    flex-direction: column;
-    justify-content: space-around;
-    z-index: 1;
 }
 
 /* ============================= FOOTER ============================= */
@@ -187,9 +156,10 @@ a {
 
 .main-footer .content {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 50px;
     align-content: center;
+    justify-items: center;
     height: 200px;
     padding: 1rem;
     padding-left: 2rem;
@@ -201,19 +171,13 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 50%;
 }
 
 .main-footer .content img {
     margin-bottom: 1rem;
     display: inline-block;
     vertical-align: center;
-}
-
-.main-footer .content .resume {
-    font-size: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .main-footer .content .list {
