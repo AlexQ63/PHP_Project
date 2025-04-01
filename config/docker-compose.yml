@@ -1,0 +1,10 @@
+services:
+
+    database:
+        image: mariadb
+        environment:
+            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: true
+        ports:
+            - '4455:4455'
+        volumes:
+            - './volumes/database:/var/lib/mysql'
