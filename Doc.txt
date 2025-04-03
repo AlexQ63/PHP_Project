@@ -1,0 +1,6 @@
+Voici la doc pour une prise en main du projet.
+
+
+
+A noté que dans cette partie, vous aurez également la partie de code pour créer la BDD qui a été faite.
+
