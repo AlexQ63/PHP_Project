@@ -1,0 +1,11 @@
+//Elle va gérer les intéractions communes entres les pages. Il va y avoir une autre page de créer où son contenu va être gérer dynamiquement : Suivant l'user, s'il a ajouté des films ou non, il y avoir un affichage particulier en rapport avec les films qu'il a ajouté et s'il est admin. Cependant, je n'aurais pas besoin de gérer ça via une classe mais avec une vérification si le nom de l'user (numéro unique) match avec la BDD -> idem pour la partie Admin.
+
+//La page login va prendre les informations de login et les comparer avec celles de la BDD. Si c'est juste, tu te log et tu vas dans la page d'acceuil de l'user log.
+
+//La page register va récupérer les informations et comparer uniquement si l'username est dispo en la comparant avec la BDD (foreach). Si c'est dispo, on va instancier la classe users
+
+//L'users va avoir toutes les données du register. Les données récupérer vont être intéragies avec les données de l'users et ainsi la BDD va être remplie.
+
+//Pour la classe Page : à part l'interaction de correspondance avec la BDD : Si l'user est similaire dans la page login, alors ok - Si l'user n'est pas similaire dans la page register alors ok -> Le reste n'a pas de similiarité.
+
+//La page d'accueil de l'user (pas encore créer au moment de cet écris) va créer des instances de movies suivant les informations qu'il va remplir depuis sa page internet (export local d'image, donne le nom d'un film) et l'user va remplir sa watchlist.
