@@ -1,3 +1,4 @@
+
 //Elle va gérer les intéractions communes entres les pages. Il va y avoir une autre page de créer où son contenu va être gérer dynamiquement : Suivant l'user, s'il a ajouté des films ou non, il y avoir un affichage particulier en rapport avec les films qu'il a ajouté et s'il est admin. Cependant, je n'aurais pas besoin de gérer ça via une classe mais avec une vérification si le nom de l'user (numéro unique) match avec la BDD -> idem pour la partie Admin.
 
 //La page login va prendre les informations de login et les comparer avec celles de la BDD. Si c'est juste, tu te log et tu vas dans la page d'acceuil de l'user log.

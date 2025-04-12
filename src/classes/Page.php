@@ -2,34 +2,29 @@
 
 namespace classes;
 
-require_once 'Database.php';
+use mysql_xdevapi\Exception;
+
 class Page
 {
-    protected $username;
-    protected $data;
-
-    public function __construct($username){
-        $this->username = $username;
-        $data = new Database();
-    }
-
-    public function getUsername()
+    protected function __construct()
     {
-        return $this->username;
+        $this->setCookie();
     }
 
-
-    public function setUsername($username)
+    private function generateCookieName(): string
     {
-        $this->username = $username;
-        return $this;
+        $binary = ramdom_bytes(8);
+        return bin2hex($binary);
     }
 
-    protected function usernameExist($username): bool
+    protected function setCookie(): bool
     {
-        if ($this->data.$this->usernameExist($username)) {
-            return true;
-        } return false;
-    }
+        $hex = $this->generateCookieName();
+        if (!setcookie("visitor_id", $hex, time() + (3600))){
+            throw new \Exception("Cookie visitor_id not set");
+        }
 
+        return true;
+    }
 }
+

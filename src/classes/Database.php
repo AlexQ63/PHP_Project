@@ -4,12 +4,11 @@ namespace classes;
 
 use PDO;
 use PDOException;
+use PDOStatement;
 
 class Database
 {
     protected PDO $connexion;
-    private const array ALLOWED_TABLE = ['movies', 'users', 'tags', 'type'];
-    private const array ALLOWED_COLUMN = ['id', 'title', 'username', 'tag_name', 'type_name'];
 
     public function __construct(){
         $this->connexion = $this->getConnexion();
@@ -27,7 +26,7 @@ class Database
         return $pdo;
     }
 
-/* ===================================================================== For Create user ===================================================================== */
+/* ===================================================================== Create user ===================================================================== */
 
     private function passwordIsValid(string $password): bool
     {
@@ -39,17 +38,9 @@ class Database
         return true;
     }
 
-    private function passwordMatches(string $passwordHashed, string $passwordSet): bool
-    {
-        return password_verify($passwordHashed, $passwordSet);
-    }
-    //Le hashage est unique, chaque hashage d'un même "password" va être différent.
-    //Pour le formulaire de connexion, on va devoir vérifier le mdp hashé de la bdd avec le passwd_verify de l'utilisateur.
-    //Il me faut simplement récupérer le mot de passe, le mettre dans la fonction et faire le match.
-
     private function usernameIsNotTaken(string $username): bool
     {
-        $result = $this->connexion->query("SELECT '$username' FROM users"); //result is empty if the SQL request has no match.
+        $result = $this->showAllColumnValues("users", $username); //result is empty if the SQL request has no match.
         if (!empty($result)) {
             throw new \Exception("This username is already taken.");
         }
@@ -67,8 +58,43 @@ class Database
         return true;
     }
 
-    private function canCreateUser(string $username, string $password): bool
+    private function realNameIsValid(string $realName): bool
     {
+        $regex = '/^[\p{L}]+(?:-[\p{L}]+)*$/u';
+        if (preg_match($regex, $realName) !== 1){
+            throw new \Exception("Invalid name format : It must be with only letter.");
+        }
+
+        return true;
+    }
+
+    private function changeDateFormat(string $date): string
+    {
+        return str_replace('/', '-', $date);
+    }
+
+    private function dateFormatIsValid(string $date): bool
+    {
+        $dateFormat = $this->changeDateFormat($date);
+        $correctDate = date_format(date_create($dateFormat), 'Y-m-d');
+
+        if (!$correctDate === $dateFormat){
+            throw new \Exception("Invalid date format : format is YYYY/MM/DD");
+        }
+
+        return true;
+    }
+
+    private function canCreateUser(string $firstname, string $lastname, string $date, string $username, string $password): bool
+    {
+        if ((!$this->realNameIsValid($firstname)) && (!$this->realNameIsValid($lastname))) {
+            return false;
+        }
+
+        if (!$this->dateFormatIsValid($date)){
+            return false;
+        }
+
         if (!$this->usernameIsNotTaken($username)) {
             return false;
         }
@@ -84,22 +110,67 @@ class Database
         return true;
     }
 
-    protected function createUser(string $username, string $password): void
+    protected function createUser(string $firstname, string $lastname, string $date, string $username, string $password): void
     {
-        if (!$this->canCreateUser($username, $password)) {
+        if (!$this->canCreateUser($firstname,$lastname, $date, $username, $password)) {
             die();
         }
 
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
-        $statement = $this->connexion->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
+        $statement = $this->connexion->prepare("
+            INSERT INTO users (firstname, lastname, date_of_birth, username, password) 
+            VALUES (:firstname, :lastname, :date_of_birth,:username, :password)
+            ");
+        $statement->bindValue(':firstname', $firstname);
+        $statement->bindValue(':lastname', $lastname);
+        $statement->bindValue(':date_of_birth', $date);
         $statement->bindValue(':username', $username);
         $statement->bindValue(':password', $hashPassword);
         $statement->execute();
     }
 
-    /* ===================================================================== For add movies ===================================================================== */
+/* ===================================================================== Log-In ===================================================================== */
 
-    // This function will serve as a utility for the entire class.
+    private function usernameExist(string $username): bool
+    {
+        $statement = $this->connexion->prepare("SELECT username FROM users WHERE username = :username");
+        $statement->bindValue(':username', $username);
+        $statement->execute();
+
+        return $statement->fetchColumn();
+    }
+
+    private function getPasswordDatabase(string $username): string
+    {
+        if (!$this->usernameExist($username)){
+            throw new \Exception("Username does not exist.");
+        }
+
+        $statement = $this->connexion->prepare("SELECT password FROM users WHERE username = :username");
+        $statement->bindValue(':username', $username);
+        $statement->execute();
+
+        return $statement->fetchColumn();
+    }
+
+    private function passwordMatches(string $username, string $passwordSet): bool
+    {
+        $passwordHashed = $this->getPasswordDatabase($username);
+        if (!password_verify($passwordHashed, $passwordSet)){
+            throw new \Exception("Invalid password.");
+        }
+
+        return true;
+    }
+
+    protected function userCanLogin(string $username, string $password): bool
+    {
+        return $this->usernameExist($username) && $this->passwordMatches($username, $password);
+    }
+
+/* ============================================================== Add movies to watchlist / add movies ============================================================== */
+
+    // This function may serve as a utility for the entire class.
     private function getIdByValue(string $table, string $column, string $value): int
     {
         $statement = $this->connexion->prepare("SELECT id FROM '$table' WHERE '$column' = :value");
@@ -122,14 +193,21 @@ class Database
     {
         $movieId = $this->getIdByValue("movies", "title", $title);
         $userId = $this->getIdByValue("users", "username", $username);
-        $statement = $this->connexion->query("SELECT movie_id FROM watchlist WHERE movie_id = $movieId AND user_id = $userId");
+        $statement = $this->connexion->query("
+            SELECT movie_id 
+            FROM watchlist 
+            WHERE movie_id = $movieId 
+            AND user_id = $userId
+            ");
+
         if (!empty($statement)) {
             throw new \Exception("This movie is already in watchlist.");
         }
 
         return true;
     }
-    private function userCanAddMovie(string $username, string $title): bool
+
+    private function userCanAddMovieOnWatchlist(string $username, string $title): bool
     {
         if (!$this->movieExist($title)){
             return false;
@@ -142,9 +220,9 @@ class Database
         return true;
     }
 
-    protected function userAddMovie(string $username, string $title)
+    protected function userAddMovieOnWatchlist(string $username, string $title): \PDOStatement
     {
-        if (!$this->userCanAddMovie($username, $title)) {
+        if (!$this->userCanAddMovieOnWatchlist($username, $title)) {
             die();
         }
 
@@ -156,20 +234,46 @@ class Database
         $statement->bindValue(':user', $userId);
         $statement->execute();
     }
-
-    /* ===================================================================== For display Movies ===================================================================== */
-
-    private function compareTableWithAllowedTable(string $table): bool
+// Un user va pouvoir add un film si l'url est valide ->utilisé getimagesize()
+// Il va pouvoir le faire aussi sans vérifier le titre ni rien d'autres.
+    protected function userAddMovieOnDatabase(string $username, string $title, string $pictureUrl): PDOStatement
     {
-        if (!in_array($table, self::ALLOWED_TABLE)){
-            throw new \Exception("Invalid table.");
-        }
 
-        return true;
     }
-    private function showAllFromTable(string $table)
+//TODO User avec permission ajoute film à la base de données suivant le titre et l'image.
+
+/* ========================================================= Display watchlist / Movies / Tag / Type =========================================================== */
+
+    protected function displayAllTitleOrTag(string $table): array
     {
-        $statement = $this->connexion->prepare("SELECT * FROM '$table'");
+        $statement = $this->connexion->query("SELECT description FROM '$table'");
+        return $statement->fetchAll(\PDO::FETCH_NUM);
     }
-    //User va demander les films dans bdd suivant tag ou categorie -> cad que depuis les tags on va afficher tous les films -> On va récupérer les tags . (Select * from table Where column = :column) ensuite on fetch all
+
+    protected function displayTitleAndPicture(string $value): array
+    {
+        $statement = $this->connexion->prepare("
+            SELECT movies.title, movies.picture_url 
+            FROM movies 
+            WHERE id = :value
+            ");
+        $statement->bindValue(':value', $value);
+        $statement->execute();
+        return $statement->fetchAll(\PDO::FETCH_NUM);
+    }
+
+    protected function showUserWatchlist(string $username): array
+    {
+        $userId = $this->getIdByValue("users", "username", $username);
+
+        $statement = $this->connexion->prepare("
+            SELECT movies.title, movies.picture_url 
+            FROM movies 
+            INNER JOIN watchlist ON movies.id = watchlist.movie_id 
+            WHERE watchlist.user_id = :user_id
+        ");
+        $statement->bindValue(':user_id', $userId);
+        $statement->execute();
+        return $statement->fetchAll(\PDO::FETCH_NUM);
+    }
 }
