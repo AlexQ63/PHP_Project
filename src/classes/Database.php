@@ -14,6 +14,10 @@ class Database
         $this->connexion = $this->getConnexion();
     }
 
+    private function __destruct(){
+        $this->getDisconnect();
+    }
+
     protected function getConnexion(): PDO
     {
         try{
@@ -24,6 +28,11 @@ class Database
             die();
         }
         return $pdo;
+    }
+
+    protected function getDisconnect(): void
+    {
+        $this->connexion = null;
     }
 
 /* ===================================================================== Create user ===================================================================== */
@@ -163,7 +172,7 @@ class Database
         return true;
     }
 
-    protected function userCanLogin(string $username, string $password): bool
+    public function userCanLogin(string $username, string $password): bool
     {
         return $this->usernameExist($username) && $this->passwordMatches($username, $password);
     }
@@ -220,7 +229,7 @@ class Database
         return true;
     }
 
-    protected function userAddMovieOnWatchlist(string $username, string $title): \PDOStatement
+    public function userAddMovieOnWatchlist(string $username, string $title): bool
     {
         if (!$this->userCanAddMovieOnWatchlist($username, $title)) {
             die();
@@ -232,25 +241,26 @@ class Database
         $statement = $this->connexion->prepare("INSERT INTO watchlist (movie_id, user_id) VALUES (:title, :user)");
         $statement->bindValue(':title', $movieId);
         $statement->bindValue(':user', $userId);
-        $statement->execute();
+        return $statement->execute();
     }
-// Un user va pouvoir add un film si l'url est valide ->utilisé getimagesize()
-// Il va pouvoir le faire aussi sans vérifier le titre ni rien d'autres.
-    protected function userAddMovieOnDatabase(string $username, string $title, string $pictureUrl): PDOStatement
-    {
 
+    public function userAddMovieOnDatabase(string $title, string $pictureUrl): bool
+    {
+        $statement = $this->connexion->prepare("INSERT INTO movies (title, picture_url) VALUES (:title, :pictureUrl)");
+        $statement->bindValue(':title', $title);
+        $statement->bindValue(':pictureUrl', $pictureUrl);
+        return $statement->execute();
     }
-//TODO User avec permission ajoute film à la base de données suivant le titre et l'image.
 
 /* ========================================================= Display watchlist / Movies / Tag / Type =========================================================== */
 
-    protected function displayAllTitleOrTag(string $table): array
+    public function displayAllTitleOrTag(string $table): array
     {
         $statement = $this->connexion->query("SELECT description FROM '$table'");
         return $statement->fetchAll(\PDO::FETCH_NUM);
     }
 
-    protected function displayTitleAndPicture(string $value): array
+    public function displayTitleAndPicture(string $value): array
     {
         $statement = $this->connexion->prepare("
             SELECT movies.title, movies.picture_url 
@@ -262,7 +272,7 @@ class Database
         return $statement->fetchAll(\PDO::FETCH_NUM);
     }
 
-    protected function showUserWatchlist(string $username): array
+    public function showUserWatchlist(string $username): array
     {
         $userId = $this->getIdByValue("users", "username", $username);
 
