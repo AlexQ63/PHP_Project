@@ -10,17 +10,19 @@ class Database
 {
     protected PDO $connexion;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->connexion = $this->getConnexion();
     }
 
-    private function __destruct(){
+    public function __destruct()
+    {
         $this->getDisconnect();
     }
 
     protected function getConnexion(): PDO
     {
-        try{
+        try {
             $pdo = new PDO("mysql:host=localhost;dbname=Watchlist", "root", "");
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
@@ -35,19 +37,19 @@ class Database
         $this->connexion = null;
     }
 
-/* ===================================================================== Create user ===================================================================== */
+    /* ===================================================================== Create user ===================================================================== */
 
-    private function passwordIsValid(string $password): bool
+    protected function passwordIsValid(string $password): bool
     {
         $regex = '/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,}$/';
-        if (preg_match($regex, $password) !== 1){
+        if (preg_match($regex, $password) !== 1) {
             throw new \Exception("Invalid password : It must contain an uppercase letter, a digit, and a special character, and the length must be 8 characters.");
         }
 
         return true;
     }
 
-    private function usernameIsNotTaken(string $username): bool
+    protected function usernameIsNotTaken(string $username): bool
     {
         $result = $this->showAllColumnValues("users", $username); //result is empty if the SQL request has no match.
         if (!empty($result)) {
@@ -57,50 +59,34 @@ class Database
         return true;
     }
 
-    private function usernameIsValid(string $username): bool
+    protected function usernameIsValid(string $username): bool
     {
         $regex = '/^[A-Za-z][A-Za-z0-9_-]{2,}$/';
-        if (preg_match($regex, $username) !== 1){
+        if (preg_match($regex, $username) !== 1) {
             throw new \Exception("Invalid username : It must start with a letter and the length must be 3 characters.");
         }
 
         return true;
     }
 
-    private function realNameIsValid(string $realName): bool
+    protected function realNameIsValid(string $realName): bool
     {
         $regex = '/^[\p{L}]+(?:-[\p{L}]+)*$/u';
-        if (preg_match($regex, $realName) !== 1){
+        if (preg_match($regex, $realName) !== 1) {
             throw new \Exception("Invalid name format : It must be with only letter.");
         }
 
         return true;
     }
 
-    private function changeDateFormat(string $date): string
+    protected function changeDateFormat(string $date): string
     {
-        return str_replace('/', '-', $date);
+        return date_format(date_create(str_replace('/', '-', $date)), 'Y-m-d');
     }
 
-    private function dateFormatIsValid(string $date): bool
-    {
-        $dateFormat = $this->changeDateFormat($date);
-        $correctDate = date_format(date_create($dateFormat), 'Y-m-d');
-
-        if (!$correctDate === $dateFormat){
-            throw new \Exception("Invalid date format : format is YYYY/MM/DD");
-        }
-
-        return true;
-    }
-
-    private function canCreateUser(string $firstname, string $lastname, string $date, string $username, string $password): bool
+    protected function canCreateUser(string $firstname, string $lastname, string $username, string $password): bool
     {
         if ((!$this->realNameIsValid($firstname)) && (!$this->realNameIsValid($lastname))) {
-            return false;
-        }
-
-        if (!$this->dateFormatIsValid($date)){
             return false;
         }
 
@@ -119,12 +105,29 @@ class Database
         return true;
     }
 
-    protected function createUser(string $firstname, string $lastname, string $date, string $username, string $password): void
+    public function changeUserToAdmin($username): void
     {
-        if (!$this->canCreateUser($firstname,$lastname, $date, $username, $password)) {
+        $statement = $this->connexion->prepare("UPDATE users SET has_right = 1 WHERE username = :username");
+        $statement->bindValue(":username", $username);
+        $statement->execute();
+    }
+
+    public function userIsAdmin(string $username): bool
+    {
+        $statement = $this->connexion->prepare("SELECT has_right FROM users WHERE username = :username");
+        $statement->bindValue(":username", $username);
+        $statement->execute();
+
+        return $statement->fetchColumn() == 1;
+    }
+
+    public function createUser(string $firstname, string $lastname, string $date, string $username, string $password): void
+    {
+        if (!$this->canCreateUser($firstname, $lastname, $username, $password)) {
             die();
         }
 
+        $dataDate = $this->changeDateFormat($date);
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
         $statement = $this->connexion->prepare("
             INSERT INTO users (firstname, lastname, date_of_birth, username, password, has_right) 
@@ -132,16 +135,16 @@ class Database
             ");
         $statement->bindValue(':firstname', $firstname);
         $statement->bindValue(':lastname', $lastname);
-        $statement->bindValue(':date_of_birth', $date);
+        $statement->bindValue(':date_of_birth', $dataDate);
         $statement->bindValue(':username', $username);
         $statement->bindValue(':password', $hashPassword);
         $statement->bindValue(':hasRight', 0);
         $statement->execute();
     }
 
-/* ===================================================================== Log-In ===================================================================== */
+    /* ===================================================================== Log-In ===================================================================== */
 
-    private function usernameExist(string $username): bool
+    protected function usernameExist(string $username): bool
     {
         $statement = $this->connexion->prepare("SELECT username FROM users WHERE username = :username");
         $statement->bindValue(':username', $username);
@@ -150,9 +153,9 @@ class Database
         return $statement->fetchColumn();
     }
 
-    private function getPasswordDatabase(string $username): string
+    protected function getPasswordDatabase(string $username): string
     {
-        if (!$this->usernameExist($username)){
+        if (!$this->usernameExist($username)) {
             throw new \Exception("Username does not exist.");
         }
 
@@ -163,10 +166,10 @@ class Database
         return $statement->fetchColumn();
     }
 
-    private function passwordMatches(string $username, string $passwordSet): bool
+    protected function passwordMatches(string $username, string $passwordSet): bool
     {
         $passwordHashed = $this->getPasswordDatabase($username);
-        if (!password_verify($passwordHashed, $passwordSet)){
+        if (!password_verify($passwordHashed, $passwordSet)) {
             throw new \Exception("Invalid password.");
         }
 
@@ -178,18 +181,25 @@ class Database
         return $this->usernameExist($username) && $this->passwordMatches($username, $password);
     }
 
-/* ============================================================== Add movies to watchlist / add movies ============================================================== */
+    /* ============================================================== Add movies to watchlist / add movies / delete movies ============================================================== */
 
     // This function may serve as a utility for the entire class.
-    private function getIdByValue(string $table, string $column, string $value): int
+    protected function getIdByValue(string $table, string $column, string $value): int
     {
-        $statement = $this->connexion->prepare("SELECT id FROM '$table' WHERE '$column' = :value");
+        $statement = $this->connexion->prepare("SELECT id FROM :table WHERE :column = :value");
+        $statement->bindValue(':table', $table);
+        $statement->bindValue(':column', $column);
         $statement->bindValue(':value', $value);
         $statement->execute();
-        return $statement->fetchColumn();
+        $result = $statement->fetchColumn();
+        if ($statement->fetchColumn() === false) {
+            return 0;
+        }
+
+        return $result;
     }
 
-    private function movieExist(string $title): bool
+    protected function movieExist(string $title): bool
     {
         $statement = $this->connexion->query("SELECT id FROM movies WHERE title = '$title'");
         if (empty($statement)) {
@@ -199,7 +209,7 @@ class Database
         return true;
     }
 
-    private function movieNotInWatchlist(string $title, string $username): bool
+    protected function movieNotInWatchlist(string $title, string $username): bool
     {
         $movieId = $this->getIdByValue("movies", "title", $title);
         $userId = $this->getIdByValue("users", "username", $username);
@@ -217,13 +227,13 @@ class Database
         return true;
     }
 
-    private function userCanAddMovieOnWatchlist(string $username, string $title): bool
+    protected function userCanAddMovieOnWatchlist(string $username, string $title): bool
     {
-        if (!$this->movieExist($title)){
+        if (!$this->movieExist($title)) {
             return false;
         }
 
-        if (!$this->movieNotInWatchlist($username, $title)){
+        if (!$this->movieNotInWatchlist($username, $title)) {
             return false;
         }
 
@@ -245,7 +255,18 @@ class Database
         return $statement->execute();
     }
 
-    public function userAddMovieOnDatabase(string $title, string $pictureUrl): bool
+    public function userDeleteMovieOnWatchlist(string $username, string $title): void
+    {
+        $movieId = $this->getIdByValue("movies", "title", $title);
+        $userId = $this->getIdByValue("users", "username", $username);
+
+        $statement = $this->connexion->prepare("DELETE FROM watchlist WHERE movie_id = :movieid AND user_id = :userid");
+        $statement->bindValue(':movieid', $movieId);
+        $statement->bindValue(':userid', $userId);
+        $statement->execute();
+    }
+
+    public function adminAddMovieOnDatabase(string $title, string $pictureUrl): bool
     {
         $statement = $this->connexion->prepare("INSERT INTO movies (title, picture_url) VALUES (:title, :pictureUrl)");
         $statement->bindValue(':title', $title);
@@ -253,7 +274,14 @@ class Database
         return $statement->execute();
     }
 
-/* ========================================================= Display watchlist / Movies / Tag / Type =========================================================== */
+    public function deleteMovie(string $title, string $username): void
+    {
+        $statement = $this->connexion->prepare("DELETE FROM movies WHERE title = :title");
+        $statement->bindValue(':title', $title);
+        $statement->execute();
+    }
+
+    /* ========================================================= Display watchlist / Movies / Tag / Type =========================================================== */
 
     public function displayAllTitleOrTag(string $table): array
     {
@@ -261,7 +289,7 @@ class Database
         return $statement->fetchAll(\PDO::FETCH_NUM);
     }
 
-    public function displayTitleAndPicture(string $value): array
+    public function displayMovie(string $value): array
     {
         $statement = $this->connexion->prepare("
             SELECT movies.title, movies.picture_url 
@@ -286,5 +314,40 @@ class Database
         $statement->bindValue(':user_id', $userId);
         $statement->execute();
         return $statement->fetchAll(\PDO::FETCH_NUM);
+    }
+
+    public function displaySpecificRequest(string $title, string $tag, string $type): array
+    {
+        $movieId = $this->getIdByValue("movies", "title", $title);
+        $tagId = $this->getIdByValue("tag", "description", $tag);
+        $typeId = $this->getIdByValue("type", "description", $type);
+
+        $sql = "
+        SELECT movies.title, movies.picture_url 
+        FROM movies 
+        INNER JOIN movie_tag ON movies.id = movie_tag.movie_id
+        INNER JOIN movie_type ON movies.id = movie_type.movie_id
+        WHERE 1=1
+        ";
+
+        if ($movieId != 0) {
+            $sql .= " AND movies.ID LIKE :movieid";
+        }
+
+        if ($tagId != 0) {
+            $sql .= " AND movie_tag.tag_ID LIKE :tagid";
+        }
+
+        if ($typeId != 0) {
+            $sql .= " AND movie_type.type_ID LIKE :typeid";
+        }
+
+        $statement = $this->connexion->prepare($sql);
+        $statement->bindValue(':movieid', $movieId);
+        $statement->bindValue(':tagid', $tagId);
+        $statement->bindValue(':typeid', $typeId);
+        $statement->execute();
+
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

@@ -11,17 +11,12 @@ class Loginpage extends Page
     public function __construct()
     {
         $this->data = new Database();
-        parent::__construct();
-    }
-
-    private function getRequestPost(): bool
-    {
-        return $_SERVER['REQUEST_METHOD'] == 'POST';
+        $this->page = new Page();
     }
 
     private function getLogin(): array
     {
-        if (!$this->getRequestPost()) {
+        if (!$this->page->getRequestPost()) {
             throw new \Exception("Wrong request method.");
         }
         $username = $_POST['username'];
@@ -41,7 +36,7 @@ class Loginpage extends Page
         return 86400;
     }
 
-    private function setUserCookie(string $username): void
+    public function setUserCookie(string $username): void
     {
         $cookieTime = $this->defineCookieTime();
         setcookie("username", $username, time() + $cookieTime);

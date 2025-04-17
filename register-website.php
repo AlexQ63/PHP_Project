@@ -9,15 +9,15 @@
         <header>
             <nav class="navbar">
                 <div class="container">
-                    <a class="navbar-logo" href="main-website.html">
+                    <a class="navbar-logo" href="main-website.php">
                         <img class="logo" src="assets/website-picture/Logo.webp">
                     </a>
                     <ul class="navbar-homepage">
                         <li>
-                            <a class="nav-link" href="main-website.html">My Homepage</a>
+                            <a class="nav-link" href="main-website.php">My Homepage</a>
                         </li>
                         <li>
-                            <a class="nav-link" href="login-website.html">Log In</a>
+                            <a class="nav-link" href="login-website.php">Log In</a>
                         </li>
                     </ul>
                 </div>
@@ -53,11 +53,11 @@
                         <ul>
                             <li>
                                 <img src="assets/website-picture/homepage.webp">
-                                <a href="main-website.html">Homepage</a>
+                                <a href="main-website.php">Homepage</a>
                             </li>
                             <li>
                                 <img src="assets/website-picture/log-in.webp">
-                                <a href="login-website.html">Log In</a>
+                                <a href="login-website.php">Log In</a>
                             </li>
                         </ul>
                     </nav>

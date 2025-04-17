@@ -17,10 +17,10 @@
                         <a class="nav-link" href="#">My Homepage</a>
                     </li>
                     <li>
-                        <a class="nav-link" href="register-website.html">Create Account</a>
+                        <a class="nav-link" href="register-website.php">Create Account</a>
                     </li>
                     <li>
-                        <a class="nav-link" href="login-website.html">Log In</a>
+                        <a class="nav-link" href="login-website.php">Log In</a>
                     </li>
                 </ul>
             </div>
@@ -56,7 +56,7 @@
                     </div>
                     <div class="text-and-link">
                         <span class="regular-text">A watchlist website is an online platform that allows users to track movies and TV shows they want to watch or have already seen. It helps users organize their entertainment preferences, discover new content, and keep track of their progress. With this watchlist, users can save movies and series they plan to watch, mark titles as "watched" to keep track of their viewing history, receive recommendations based on their interests, and share their lists with friends or explore popular trends. A watchlist website enhances the viewing experience by making it easier to manage and discover great content! <br> </span>
-                        <span>You want to join the community? Just create your <a href="register-website.html" class="text"> account.</a>  Already on board? <a href="login-website.html" class="text"> Log in!</a></span>
+                        <span>You want to join the community? Just create your <a href="register-website.php" class="text"> account.</a>  Already on board? <a href="login-website.php" class="text"> Log in!</a></span>
                     </div>
                 </div>
             </div>
@@ -84,11 +84,11 @@
                         </li>
                         <li>
                             <img src="assets/website-picture/add.webp">
-                            <a href="register-website.html">Create Account</a>
+                            <a href="register-website.php">Create Account</a>
                         </li>
                         <li>
                             <img src="assets/website-picture/log-in.webp">
-                            <a href="login-website.html">Log In</a>
+                            <a href="login-website.php">Log In</a>
                         </li>
                     </ul>
                 </nav>
