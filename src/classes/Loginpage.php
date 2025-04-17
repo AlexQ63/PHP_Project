@@ -26,17 +26,25 @@ class Loginpage extends Page
         }
         $username = $_POST['username'];
         $password = $_POST['password'];
+        $remember = $_POST['remember'];
 
-        return [$username, $password];
+        return [$username, $password, $remember];
     }
 
-    private function getRememberMe(): array
+    private function defineCookieTime(): int
     {
-        if (!$this->getRequestPost()) {
-            throw new \Exception("Wrong request method - Remember Me Error.");
+        $data = $this->getLogin();
+        if ($data[2] === 'on') {
+            $time = 86400 * 30;
+            return $time;
         }
+        return 86400;
+    }
 
-        return $_POST['remember'];
+    private function setUserCookie(string $username): void
+    {
+        $cookieTime = $this->defineCookieTime();
+        setcookie("username", $username, time() + $cookieTime);
     }
 
     public function login(): void
@@ -46,53 +54,14 @@ class Loginpage extends Page
             $username = $dataConnexion[0];
             $password = $dataConnexion[1];
 
-            if (!$this->data->userCanLogin($username, $password)){
+            if ($this->data->userCanLogin($username, $password)){
                 session_start();
-                
+                $this->setUserCookie($username);
+                header("Location: /homepage-website.php");
+                exit();
             }
-
         } catch (\PDOException $e) {
-
+            echo $e->getMessage();
         }
-
-
-
     }
-
-        //Le login ici va récup les 2 données rentrés et regarder s'il peut se connecter
-
 }
-//      -Page de connexion :
-//        -Récupère 2 datas
-//        -Créer un comportement : Création d'une session et potentiellement d'un cookie permanent - Set un nouveau cookie par rapport à celui créer par défaut ?
-
-
-//function isConnected(): bool
-//{
-//    return getCurrentUsername() !== null;
-//}
-//
-//function getCurrentUsername(): ?string
-//{
-//    return $_SESSION['username'] ?? $_COOKIE['username'] ?? null;
-//}
-//
-//function login($username, $password): void
-//{
-//    global $user;
-//
-//    if ($user['username'] !== $username) {
-//        return;
-//    }
-//
-//    if ($user['password'] !== $password) {
-//        return;
-//    }
-//
-//    $_SESSION['username'] = $username;
-//}
-//
-//function rememberMe(string $username): void
-//{
-//    setcookie('username', $username, time() + 3600 * 24 * 30);
-//}

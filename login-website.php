@@ -32,7 +32,7 @@
         <form method="post">
             <input type="text" name="username" placeholder="Username" class="user">
             <input type="password" name="password" placeholder="Password" class="user">
-            <label for="remember_me" class="remember">Remember Me<input type="checkbox" name="remember_me" id="remember_me" class="checkbox"></label>
+            <label for="remember_me" class="remember">Remember Me<input type="checkbox" name="remember" id="remember_me" class="checkbox"></label>
             <input type="submit" value="Submit" class="submit">
         </form>
     </section>

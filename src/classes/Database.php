@@ -127,14 +127,15 @@ class Database
 
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
         $statement = $this->connexion->prepare("
-            INSERT INTO users (firstname, lastname, date_of_birth, username, password) 
-            VALUES (:firstname, :lastname, :date_of_birth,:username, :password)
+            INSERT INTO users (firstname, lastname, date_of_birth, username, password, has_right) 
+            VALUES (:firstname, :lastname, :date_of_birth,:username, :password, :hasRight)
             ");
         $statement->bindValue(':firstname', $firstname);
         $statement->bindValue(':lastname', $lastname);
         $statement->bindValue(':date_of_birth', $date);
         $statement->bindValue(':username', $username);
         $statement->bindValue(':password', $hashPassword);
+        $statement->bindValue(':hasRight', 0);
         $statement->execute();
     }
 
