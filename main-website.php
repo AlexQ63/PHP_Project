@@ -1,3 +1,16 @@
+<?php
+
+use classes\Appmanager;
+
+require_once "src/classes/Appmanager.php";
+
+$app = new Appmanager();
+
+$app->handleCookieNewUser();
+$app->handleUserSession();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -2,10 +2,13 @@
 
 namespace classes;
 
+use AllowDynamicProperties;
 use mysql_xdevapi\Exception;
 
 require_once 'database.php';
-class Homepage extends Page
+require_once 'Page.php';
+#[AllowDynamicProperties] class Homepage extends Page
+
 {
     public function __construct()
     {
@@ -13,12 +16,12 @@ class Homepage extends Page
         $this->page = new Page();
     }
 
-    protected function getUsername(): string
+    public function getUsername(): string
     {
         return $_SESSION['username'];
     }
 
-    protected function getMovieData(): array
+    public function getMovieData(): array
     {
         if (!$this->page->getRequestGet()){
             throw new Exception("Page request get not found");
@@ -30,75 +33,80 @@ class Homepage extends Page
         return [$title, $pictureUrl];
     }
 
-    public function addMoviesInWatchlist(): void
+    public function getTargetUsername(): string
     {
-        $data = $this->getMovieData();
-        $title = $data[0];
-        $username = $this->getUsername();
-        $this->data->userAddMovieOnWatchlist($username, $title);
+        return $this->page->getRequestPost() ? $_POST["target-username"] : "";
     }
 
-    public function adminAddMovie(): void
+    protected function stringToHtml(string $string): string
     {
-        $username = $this->getUsername();
-        $movieData = $this->getMovieData();
-        $title = $movieData[0];
-        $pictureUrl = $movieData[1];
-
-        if ($this->data->userIsAdmin($username)){
-            $this->data->adminAddMovieOnDatabase($title, $pictureUrl);
-        }
+        return htmlspecialchars($string);
     }
 
-    public function adminDeleteMovie(): void
-    {
-        $username = $this->getUsername();
-        $movieData = $this->getMovieData();
-        $title = $movieData[0];
-        $pictureUrl = $movieData[1];
-
-        if ($this->data->userIsAdmin($username)){
-            $this->data->deleteMovie($title, $username);
-        }
-    }
-
-/* ===================================================================== Search form ===================================================================== */
-
-    protected function getSearchRequest(): array
+    public function getSearchRequest(): array
     {
         if (!$this->page->getRequestGet()){
             throw new Exception("You can't use this form because it's not a get resquest");
         }
 
-        $title = $_GET["title"];
-        $tag = $_GET["tag"];
-        $type = $_GET["type"];
+        $title = $_GET['title'] ?? '';
+        $tags = isset($_GET['tag']) ? (array)$_GET['tag'] : [];
+        $types = isset($_GET['type']) ? (array)$_GET['type'] : [];
 
-        return [$title, $tag, $type];
+        $tags = array_map('strval', array_filter($tags, 'is_scalar'));
+        $types = array_map('strval', array_filter($types, 'is_scalar'));
+
+        return [$title, $tags, $types];
     }
 
+    public function displayMovies(array $movies): string
+    {
+        $html = '';
+        foreach ($movies as $movie) {
+            $title = htmlspecialchars($movie['title']);
+            $pictureUrl = htmlspecialchars($movie['picture_url']);
 
+            $html .= "<div class='movie'>";
+            $html .= "<h3>{$title}</h3>";
+            $html .= "<img src='{$pictureUrl}' alt='{$title}'>";
+            $html .= "</div>";
+        }
+        return $html;
+    }
 
-    //requête pour la recherche
-    //Tu vas construire progressivement ta requête SQL en fonction des champs fournis, comme un puzzle :
-    //    Ensuite, tu ajoutes des morceaux à cette requête selon les champs remplis
-    //        Si le titre est rempli, tu ajoutes une condition AND titre LIKE
-    //        Si le tag est rempli, tu ajoutes une condition AND tag = ...
-    //        Idem pour le type
+    public function displayMoviesAllowedToWatchlist(string $title, string $pictureUrl, int $movieId): string
+    {
+        $htmlTitle = $this->stringToHtml($title);
+        $htmlPicture = $this->stringToHtml($pictureUrl);
+        $linkTitle = urlencode($title);
+        $linkPicture = urlencode($pictureUrl);
+
+        return "
+        <div class='movie'>
+            <h2>$htmlTitle</h2>
+            <img src='$htmlPicture' alt='$htmlTitle'>
+            <p><a href='?movie=$movieId&title=$linkTitle&picture_url=$linkPicture&action=add'>Add to watchlist</a></p>
+            <p><a href='?movie=$movieId&title=$linkTitle&picture_url=$linkPicture&action=remove'>Remove from watchlist</a></p>
+        </div>
+    ";
+    }
+
+    public function htmlTypeOrTag(string $table): string
+    {
+        $data = $this->data->showAllTypeOrTag($table);
+        $htmlOutput = "";
+
+        $inputName = ($table === 'tag') ? 'tag' : 'type';
+
+        foreach ($data as $displayData) {
+            $htmlData = $this->stringToHtml($displayData['description']);
+            $htmlOutput .= "
+                <label>
+                    <input type='checkbox' name='{$inputName}[]' value='{$htmlData}'> {$htmlData}
+                </label><br>
+                ";
+        }
+
+        return $htmlOutput;
+    }
 }
-
-/*
--Page de l'user connecté :
-    -Récupère les données du formulaire d'affichage de film suivant types ou tag
-    -Créer un comportement avec le logout qui va détruire le comportement de la page de connexion.
-    -Upload de media
-    -Pagination à faire
-
-
-Les formulaires à avoir :
-    -1 qui regarde les titres de film et les affiche.
-    -1 qui regarde
-        Comment gérer la création de compte d'un admin ? Est-ce que j'ai besoin de créer ne condition pour qu'un user est admin ou non ? Je peux juste gérer le fait qu'un admin peut mettre un autre utilisateur comme admin. Je n'ai donc pas besoin de le gérer ici, mais depuis un formulaire de la homepage admin et faire une modification de la table.
-    Il va y avoir une autre page de créer où son contenu va être gérer dynamiquement : Suivant l'user, s'il a ajouté des films ou non, il y avoir un affichage particulier en rapport avec les films qu'il a ajouté et s'il est admin. Cependant, je n'aurais pas besoin de gérer ça via une classe mais avec une vérification si le nom de l'user (numéro unique) match avec la BDD -> idem pour la partie Admin.
-
-La page d'accueil de l'user (pas encore créer au moment de cet écris) va créer des instances de movies suivant les informations qu'il va remplir depuis sa page internet (export local d'image, donne le nom d'un film) et l'user va remplir sa watchlist. */

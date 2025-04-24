@@ -8,11 +8,11 @@ class Page
 {
     private function generateCookieName(): string
     {
-        $binary = ramdom_bytes(8);
+        $binary = random_bytes(8);
         return bin2hex($binary);
     }
 
-    protected function setCookie(): bool
+    public function setCookie(): bool
     {
         $hex = $this->generateCookieName();
         if (!setcookie("visitor_id", $hex, time() + (3600))){
@@ -22,7 +22,7 @@ class Page
         return true;
     }
 
-    protected function sessionIsSet(): bool
+    public function sessionIsSet(): bool
     {
         return isset($_SESSION['"username']);
     }
@@ -30,20 +30,20 @@ class Page
     public function redirect(): void
     {
         if (!$this->sessionIsSet()) {
-            die();
+            return;
         }
 
         header('Location: homepage-website.php');
-        exit();
+        exit;
     }
 
     protected function getRequestPost(): bool
     {
-        return $_SERVER['REQUEST_METHOD'] == 'POST';
+        return $_SERVER['REQUEST_METHOD'] === 'POST';
     }
 
     protected function getRequestGet(): bool
     {
-        return $_SERVER['REQUEST_METHOD'] == 'GET';
+        return $_SERVER['REQUEST_METHOD'] === 'GET';
     }
 }

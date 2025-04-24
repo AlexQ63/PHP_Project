@@ -1,3 +1,18 @@
+<?php
+
+use classes\Appmanager;
+
+require_once "src/classes/Appmanager.php";
+
+$app = new Appmanager();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['firstname'], $_POST['lastname'], $_POST['username'], $_POST['password'], $_POST['birthdate'])){
+    $app->handleCreateAccount();
+    $app->handleUserConnectAfterCreate();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>

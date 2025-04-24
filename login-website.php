@@ -1,3 +1,15 @@
+<?php
+
+use classes\Appmanager;
+
+require_once "src/classes/Appmanager.php";
+
+$app = new Appmanager();
+
+$app->handleLogin();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

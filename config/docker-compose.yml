@@ -3,7 +3,7 @@ services:
     database:
         image: mariadb
         environment:
-            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: true
+            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "true"
         ports:
             - '4455:3306'
         volumes:

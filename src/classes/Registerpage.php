@@ -2,10 +2,12 @@
 
 namespace classes;
 
+use AllowDynamicProperties;
+
 require_once 'Database.php';
 require_once 'Loginpage.php';
 
-class Registerpage extends Page
+#[AllowDynamicProperties] class Registerpage extends Page
 {
     public function __construct()
     {
@@ -14,7 +16,7 @@ class Registerpage extends Page
         $this->loginpage = new Loginpage();
     }
 
-    private function getRegister(): array
+    protected function getRegister(): array
     {
         if (!$this->page->getRequestPost()) {
             throw new \Exception("Wrong request method.");
@@ -35,16 +37,15 @@ class Registerpage extends Page
         $this->data->createUser($dataCreation[0], $dataCreation[1], $dataCreation[2], $dataCreation[3], $dataCreation[4]);
     }
 
-    public function userGetConnected(): void
+    public function userConnectAfterCreation(): void
     {
         $dataCreation = $this->getRegister();
         if ($this->data->userCanLogin($dataCreation[2],$dataCreation[3])){
             session_start();
+            $_SESSION['username'] = $dataCreation[2];
             $this->loginpage->setUserCookie($dataCreation[2]);
-            header("Location: /homepage-website.php");
-            exit();
+            header("Location: homepage-website.php");
+            exit;
         }
     }
-
-
 }

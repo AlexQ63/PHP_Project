@@ -2,10 +2,12 @@
 
 namespace classes;
 
+use AllowDynamicProperties;
+
 require_once 'Page.php';
 require_once 'Database.php';
 
-class Loginpage extends Page
+#[AllowDynamicProperties] class Loginpage extends Page
 {
 
     public function __construct()
@@ -14,11 +16,12 @@ class Loginpage extends Page
         $this->page = new Page();
     }
 
-    private function getLogin(): array
+    protected function getLogin(): array
     {
         if (!$this->page->getRequestPost()) {
             throw new \Exception("Wrong request method.");
         }
+
         $username = $_POST['username'];
         $password = $_POST['password'];
         $remember = $_POST['remember'];
@@ -44,19 +47,14 @@ class Loginpage extends Page
 
     public function login(): void
     {
-        try {
-            $dataConnexion = $this->getLogin();
-            $username = $dataConnexion[0];
-            $password = $dataConnexion[1];
+        $dataConnexion = $this->getLogin();
 
-            if ($this->data->userCanLogin($username, $password)){
-                session_start();
-                $this->setUserCookie($username);
-                header("Location: /homepage-website.php");
-                exit();
-            }
-        } catch (\PDOException $e) {
-            echo $e->getMessage();
+        if ($this->data->userCanLogin($dataConnexion[0], $dataConnexion[1])){
+            session_start();
+            $_SESSION['username'] = $dataConnexion[0];
+            $this->setUserCookie($dataConnexion[0]);
+            header("Location: homepage-website.php");
+            exit;
         }
     }
 }

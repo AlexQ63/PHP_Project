@@ -1,65 +1,55 @@
 USE Watchlist;
 
 CREATE TABLE users (
-	ID int,
-	firstname varchar(255),
-	lastname varchar(255),
-	date_of_birth date,
-	username varchar(255),
-	password varchar(30),
-	has_right bool,
-	ADD PRIMARY KEY (ID)
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(255),
+    lastname VARCHAR(255),
+    date_of_birth DATE,
+    username VARCHAR(255),
+    password VARCHAR(30),
+    has_right BOOLEAN
 );
 
-CREATE TABLE movies(
-	ID int,
-	title varchar(50) ,
-	picture_url varchar(255),
-	ADD PRIMARY KEY (ID)
+CREATE TABLE movies (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(50),
+    picture_url VARCHAR(255)
 );
 
-CREATE TABLE watchlist
-(
-	ID int,
-	user_id int,
-	movie_id int,
-	ADD PRIMARY KEY (ID),
-	ADD FOREIGN KEY (user_id) REFERENCES users(ID),
-	ADD FOREIGN KEY (movie_id) REFERENCES movies(ID)
+CREATE TABLE watchlist (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    movie_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(ID) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES movies(ID) ON DELETE CASCADE
 );
 
-CREATE TABLE type
-(
-	ID int,
-	type_name varchar(50),
-	ADD PRIMARY KEY (ID)
+CREATE TABLE type (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(50)
 );
 
-CREATE TABLE tag(
-	ID int,
-	tag_name varchar(50),
-	ADD PRIMARY KEY (ID)
+CREATE TABLE tag (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(50)
 );
 
-CREATE TABLE movie_tag
-(
-	ID int,
-	movie_ID int,
-	tag_ID int,
-	ADD PRIMARY KEY (ID),
-	ADD FOREIGN KEY (tag_ID) REFERENCES tag(ID),
-	ADD FOREIGN KEY (movie_ID) REFERENCES movies(ID)
+CREATE TABLE movie_tag (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    movie_ID INT,
+    tag_ID INT,
+    FOREIGN KEY (movie_ID) REFERENCES movies(ID) ON DELETE CASCADE,
+    FOREIGN KEY (tag_ID) REFERENCES tag(ID) ON DELETE CASCADE
 );
 
-CREATE TABLE movie_type
-(
-	ID int,
-	movie_ID int,
-	type_ID int,
-	ADD PRIMARY KEY (ID),
-	ADD FOREIGN KEY (type_ID) REFERENCES type(ID),
-	ADD FOREIGN KEY (movie_ID) REFERENCES movies(ID)
+CREATE TABLE movie_type (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    movie_ID INT,
+    type_ID INT,
+    FOREIGN KEY (movie_ID) REFERENCES movies(ID) ON DELETE CASCADE,
+    FOREIGN KEY (type_ID) REFERENCES type(ID) ON DELETE CASCADE
 );
+
 
 INSERT INTO users (ID, firstname, lastname, date_of_birth, username, password, has_right) VALUES
 (1, 'Alice', 'Martin', '1995-06-12', 'alice95', 'pass123', TRUE),
@@ -97,7 +87,7 @@ INSERT INTO watchlist (ID, user_id, movie_id) VALUES
 (9, 9, 8),
 (10, 10, 4);
 
-INSERT INTO type (ID, type_name) VALUES
+INSERT INTO type (ID, description) VALUES
 (1, 'Action'),
 (2, 'Sci-Fi'),
 (3, 'Drama'),
@@ -109,7 +99,7 @@ INSERT INTO type (ID, type_name) VALUES
 (9, 'Documentary'),
 (10, 'Adventure');
 
-INSERT INTO tag (ID, tag_name) VALUES
+INSERT INTO tag (ID, description) VALUES
 (1, 'Classic'),
 (2, 'New Release'),
 (3, 'Oscar Winner'),

@@ -23,7 +23,7 @@ class Database
     protected function getConnexion(): PDO
     {
         try {
-            $pdo = new PDO("mysql:host=localhost;dbname=Watchlist", "root", "");
+            $pdo = new PDO("mysql:host=localhost;port=4455;dbname=Watchlist", "root", "");
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             echo $e->getMessage();
@@ -34,7 +34,7 @@ class Database
 
     protected function getDisconnect(): void
     {
-        $this->connexion = null;
+        unset($this->connexion);
     }
 
     /* ===================================================================== Create user ===================================================================== */
@@ -49,9 +49,17 @@ class Database
         return true;
     }
 
+    protected function showAllColumnValues(string $table, string $column,string $values): array
+    {
+        $statement = $this->connexion->prepare("SELECT * FROM $table WHERE $column = :values");
+        $statement->BindValue(":values", $values);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     protected function usernameIsNotTaken(string $username): bool
     {
-        $result = $this->showAllColumnValues("users", $username); //result is empty if the SQL request has no match.
+        $result = $this->showAllColumnValues("users", "username", $username); //result is empty if the SQL request has no match.
         if (!empty($result)) {
             throw new \Exception("This username is already taken.");
         }
@@ -121,10 +129,10 @@ class Database
         return $statement->fetchColumn() == 1;
     }
 
-    public function createUser(string $firstname, string $lastname, string $date, string $username, string $password): void
+    public function createUser(string $firstname, string $lastname,  string $username, string $password, string $date): void
     {
         if (!$this->canCreateUser($firstname, $lastname, $username, $password)) {
-            die();
+            return;
         }
 
         $dataDate = $this->changeDateFormat($date);
@@ -169,7 +177,7 @@ class Database
     protected function passwordMatches(string $username, string $passwordSet): bool
     {
         $passwordHashed = $this->getPasswordDatabase($username);
-        if (!password_verify($passwordHashed, $passwordSet)) {
+        if (!password_verify($passwordSet, $passwordHashed)) {
             throw new \Exception("Invalid password.");
         }
 
@@ -184,24 +192,24 @@ class Database
     /* ============================================================== Add movies to watchlist / add movies / delete movies ============================================================== */
 
     // This function may serve as a utility for the entire class.
-    protected function getIdByValue(string $table, string $column, string $value): int
+    public function getIdByValue(string $table, string $column, string $value): int
     {
-        $statement = $this->connexion->prepare("SELECT id FROM :table WHERE :column = :value");
-        $statement->bindValue(':table', $table);
-        $statement->bindValue(':column', $column);
+        $statement = $this->connexion->prepare("SELECT id FROM `$table` WHERE `$column` = :value");
         $statement->bindValue(':value', $value);
         $statement->execute();
         $result = $statement->fetchColumn();
-        if ($statement->fetchColumn() === false) {
+
+        if ($result === false) {
             return 0;
         }
-
         return $result;
     }
 
     protected function movieExist(string $title): bool
     {
-        $statement = $this->connexion->query("SELECT id FROM movies WHERE title = '$title'");
+        $statement = $this->connexion->prepare("SELECT id FROM movies WHERE title = :title");
+        $statement->bindValue(':title', $title);
+        $statement->execute();
         if (empty($statement)) {
             throw new \Exception("Movie does not exist.");
         }
@@ -213,14 +221,17 @@ class Database
     {
         $movieId = $this->getIdByValue("movies", "title", $title);
         $userId = $this->getIdByValue("users", "username", $username);
-        $statement = $this->connexion->query("
-            SELECT movie_id 
+        $statement = $this->connexion->prepare("
+            SELECT COUNT(*)
             FROM watchlist 
-            WHERE movie_id = $movieId 
-            AND user_id = $userId
+            WHERE movie_id = :movieId 
+            AND user_id = :userId
             ");
+        $statement->bindValue(':movieId', $movieId);
+        $statement->bindValue(':userId', $userId);
+        $statement->execute();
 
-        if (!empty($statement)) {
+        if ($statement->fetchColumn() > 0) {
             throw new \Exception("This movie is already in watchlist.");
         }
 
@@ -233,26 +244,24 @@ class Database
             return false;
         }
 
-        if (!$this->movieNotInWatchlist($username, $title)) {
+        if (!$this->movieNotInWatchlist($title, $username)) {
             return false;
         }
 
         return true;
     }
 
-    public function userAddMovieOnWatchlist(string $username, string $title): bool
+    public function userAddMovieOnWatchlist(string $username, string $title): void
     {
-        if (!$this->userCanAddMovieOnWatchlist($username, $title)) {
-            die();
+        if ($this->userCanAddMovieOnWatchlist($username, $title)) {
+            $userId = $this->getIdByValue("users", "username", $username);
+            $titleId = $this->getIdByValue("movies", "title", $title);
+
+            $statement = $this->connexion->prepare("INSERT INTO watchlist (movie_id, user_id) VALUES (:movieId, :userId)");
+            $statement->bindValue(':movieId', $titleId);
+            $statement->bindValue(':userId', $userId);
+            $statement->execute();
         }
-
-        $movieId = $this->getIdByValue("movies", "title", $title);
-        $userId = $this->getIdByValue("users", "username", $username);
-
-        $statement = $this->connexion->prepare("INSERT INTO watchlist (movie_id, user_id) VALUES (:title, :user)");
-        $statement->bindValue(':title', $movieId);
-        $statement->bindValue(':user', $userId);
-        return $statement->execute();
     }
 
     public function userDeleteMovieOnWatchlist(string $username, string $title): void
@@ -283,13 +292,13 @@ class Database
 
     /* ========================================================= Display watchlist / Movies / Tag / Type =========================================================== */
 
-    public function displayAllTitleOrTag(string $table): array
+    public function showAllTypeOrTag(string $table): array
     {
-        $statement = $this->connexion->query("SELECT description FROM '$table'");
-        return $statement->fetchAll(\PDO::FETCH_NUM);
+        $statement = $this->connexion->query("SELECT description FROM `$table`");
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
-
-    public function displayMovie(string $value): array
+//Maybe useless
+    public function showMovie(string $value): array
     {
         $statement = $this->connexion->prepare("
             SELECT movies.title, movies.picture_url 
@@ -298,7 +307,7 @@ class Database
             ");
         $statement->bindValue(':value', $value);
         $statement->execute();
-        return $statement->fetchAll(\PDO::FETCH_NUM);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function showUserWatchlist(string $username): array
@@ -311,19 +320,30 @@ class Database
             INNER JOIN watchlist ON movies.id = watchlist.movie_id 
             WHERE watchlist.user_id = :user_id
         ");
+
         $statement->bindValue(':user_id', $userId);
         $statement->execute();
-        return $statement->fetchAll(\PDO::FETCH_NUM);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function displaySpecificRequest(string $title, string $tag, string $type): array
+    public function displaySpecificRequest(string $title, array $tags, array $types): array
     {
         $movieId = $this->getIdByValue("movies", "title", $title);
-        $tagId = $this->getIdByValue("tag", "description", $tag);
-        $typeId = $this->getIdByValue("type", "description", $type);
+
+        $tagIds = [];
+        foreach ($tags as $tag) {
+            $id = $this->getIdByValue("tag", "description", $tag);
+            $tagIds[] = $id;
+        }
+
+        $typeIds = [];
+        foreach ($types as $type) {
+            $id = $this->getIdByValue("type", "description", $type);
+            $typeIds[] = $id;
+        }
 
         $sql = "
-        SELECT movies.title, movies.picture_url 
+        SELECT DISTINCT movies.title, movies.picture_url 
         FROM movies 
         INNER JOIN movie_tag ON movies.id = movie_tag.movie_id
         INNER JOIN movie_type ON movies.id = movie_type.movie_id
@@ -331,21 +351,40 @@ class Database
         ";
 
         if ($movieId != 0) {
+
             $sql .= " AND movies.ID LIKE :movieid";
         }
 
-        if ($tagId != 0) {
-            $sql .= " AND movie_tag.tag_ID LIKE :tagid";
+        if (!empty($tagIds)) {
+            $placeholders = [];
+            foreach ($tagIds as $realId => $id) {
+                $placeholders[] = ":tagid$realId";
+            }
+            $sql .= " AND movie_tag.tag_ID IN (" . implode(', ', $placeholders) . ")";
         }
 
-        if ($typeId != 0) {
-            $sql .= " AND movie_type.type_ID LIKE :typeid";
+        if (!empty($typeIds)) {
+            $placeholders = [];
+            foreach ($typeIds as $realId => $id) {
+                $placeholders[] = ":typeid$realId";
+            }
+            $sql .= " AND movie_type.type_ID IN (" . implode(', ', $placeholders) . ")";
         }
 
         $statement = $this->connexion->prepare($sql);
-        $statement->bindValue(':movieid', $movieId);
-        $statement->bindValue(':tagid', $tagId);
-        $statement->bindValue(':typeid', $typeId);
+
+        if ($movieId != 0) {
+            $statement->bindValue(':movieid', $movieId);
+        }
+
+        foreach ($tagIds as $realId => $id) {
+            $statement->bindValue(":tagid$realId", $id);
+        }
+
+        foreach ($typeIds as $realId => $id) {
+            $statement->bindValue(":typeid$realId", $id);
+        }
+
         $statement->execute();
 
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
