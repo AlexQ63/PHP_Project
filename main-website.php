@@ -49,22 +49,22 @@ $app->handleUserSession();
                 <div class="text-pic">
                     <div class="pic">
                         <div class="column1">
-                            <img src="assets/website-picture/Movie-1.webp" class="resize">
-                            <img src="assets/website-picture/Movie-2.webp" class="resize">
-                            <img src="assets/website-picture/Movie-3.webp" class="resize">
-                            <img src="assets/website-picture/Movie-4.webp" class="resize">
+                            <img src="assets/website-picture/Novocaine.webp" class="resize">
+                            <img src="assets/website-picture/Berlin Ete 42.webp" class="resize">
+                            <img src="assets/website-picture/Aladin.webp" class="resize">
+                            <img src="assets/website-picture/Flow.webp" class="resize">
                         </div>
                         <div class="column2">
-                            <img src="assets/website-picture/Movie-5.webp" class="resize">
-                            <img src="assets/website-picture/Movie-6.webp" class="resize">
-                            <img src="assets/website-picture/Movie-7.webp" class="resize">
-                            <img src="assets/website-picture/Movie-8.webp" class="resize">
+                            <img src="assets/website-picture/Les Bodins.webp" class="resize">
+                            <img src="assets/website-picture/Le Roi Lion.webp" class="resize">
+                            <img src="assets/website-picture/Mercato.webp" class="resize">
+                            <img src="assets/website-picture/Malcolm X.webp" class="resize">
                         </div>
                         <div class="column3">
-                            <img src="assets/website-picture/Movie-9.webp" class="resize">
-                            <img src="assets/website-picture/Movie-10.webp" class="resize">
-                            <img src="assets/website-picture/Movie-11.webp" class="resize">
-                            <img src="assets/website-picture/Movie-12.webp" class="resize">
+                            <img src="assets/website-picture/Avatar.webp" class="resize">
+                            <img src="assets/website-picture/Exodus.webp" class="resize">
+                            <img src="assets/website-picture/Le Secret de Kheops.webp" class="resize">
+                            <img src="assets/website-picture/Inestimable.webp" class="resize">
                         </div>
                     </div>
                     <div class="text-and-link">

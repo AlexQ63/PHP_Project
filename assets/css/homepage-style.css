@@ -1,0 +1,236 @@
+/* ============================= RESET CSS & MAIN ============================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+li {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    font-family: "Agency FB";
+    font-size: 1.5rem;
+}
+
+.link-style {
+    background: none;
+    border: none;
+    color: #B8C0D9;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-family: "Agency FB";
+}
+
+/* ============================= HEADER ============================= */
+
+.navbar {
+    display: flex;
+    padding-top: 2rem;
+    justify-content: center;
+    background: linear-gradient(to bottom, #D2B48C , #4B433A);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: flex-start;
+    width: 1700px;
+    height: 90px;
+    border-style: hidden;
+    border-radius: 0.5rem;
+    border-width: 5px;
+}
+
+.navbar .container .navbar-logo {
+    height: 75px;
+    width: 75px;
+}
+
+.navbar .container .navbar-homepage {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    width: 1300px;
+    justify-items: end;
+    align-items: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+.navbar .container .navbar-homepage a {
+    color: #B8C0D9;
+}
+
+/* ============================= BODY ============================= */
+
+.main-page{
+    background-color: #D2B48C;
+}
+
+.main-page .welcome{
+    display: flex;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    font-family: "Agency FB";
+    padding: 1rem;
+}
+
+.main-page .welcome span{
+    font-size: 3.5rem;
+    background: linear-gradient(135deg, #4B433A, #D2B48C);
+    color: #B8C0D9;
+    border-radius: 1rem;
+    padding-bottom: 5px;
+    max-width: 100%;
+}
+
+.main-page .container{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    align-items: center;
+}
+
+.main-page .container .display-watch{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    width: 100%;
+    height: 100%;
+    justify-items: center;
+    align-content: center;
+}
+
+.main-page .container .display-watch .movie{
+    height: 255px;
+    width: 210px;
+}
+
+.main-page .container .search-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+    background: #fdf6e3;
+    height: 100%;
+    border-radius: 12px;
+    padding: 20px 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+    margin: 2rem auto;
+}
+
+.main-page .container .search-form input, button {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    color: #1C4B7E;
+}
+
+.main-page .container .search-form .column {
+    display: flex;
+    justify-content: space-around;
+}
+
+.main-page .container .search-form .column fieldset {
+    color: #333;
+    border: none;
+    margin-bottom: 1rem;
+}
+
+.main-page .container .search-form .column fieldset legend {
+    margin-bottom: 1rem;
+}
+
+.main-page .container .search-form .column fieldset label {
+    display: block;
+    margin: 0.5px;
+    cursor: pointer;
+}
+
+.main-page .search {
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    justify-items: center;
+    padding-top: 3rem;
+}
+
+.main-page .search .movie a{
+    color: #191970;
+}
+
+.main-page .search .movie img{
+    height: 255px;
+    width: 210px;
+}
+
+    /* ============================= FOOTER ============================= */
+
+.main-footer p, a {
+    color: #B8C0D9;
+}
+
+.main-footer .content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    align-content: center;
+    height: 200px;
+    padding: 1rem;
+    padding-left: 2rem;
+    background: linear-gradient(to bottom, #4B433A, #D2B48C);
+}
+
+.main-footer .content .copyright {
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-footer .content img {
+    margin-bottom: 1rem;
+    display: inline-block;
+    vertical-align: center;
+}
+
+.main-footer .content .resume {
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-footer .content .list {
+    font-size: 1rem;
+    width: 600px;
+}
+
+.main-footer .content .list .end-navbar ul {
+    display: flex;
+    justify-content: space-around;
+}
+
+.main-footer .content .list .end-navbar li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-footer .content .list .end-navbar img {
+    max-width: 32px;
+    max-height: 32px;
+}
+
+.main-footer .content .list .end-navbar a {
+    font-size: 1.5rem;
+}

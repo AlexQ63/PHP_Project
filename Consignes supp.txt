@@ -1,4 +1,4 @@
-Penser à faire un minimum de CSS.
+
 
 Utilisation d'API -> pour ajouter un film à la liste (voir comment faire) 
 : https://developer.themoviedb.org/docs/getting-started
@@ -9,3 +9,7 @@ Pour la base de donnée : MariaDB
 En désactivant le javascript du site, le site doit marcher.
 
 https://dbdiagram.io/d/678a5e796b7fa355c338bb50
+
+Organisation du travail : 
+	-Page web : faite
+	-BDD : faite via DB diagram. Maintenant il faut que je fasse la config (yaml) + image docker + connexion à l'api pour gérer l'implémentation de films dans la BDD + créer 20 users complets (voir comment faire, si je script ou IA) avec une gestion de permission minimaliste. Pour la gestion de film, il faut gérer la partie où je dois 

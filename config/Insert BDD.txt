@@ -1,0 +1,147 @@
+USE Watchlist;
+
+CREATE TABLE users (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(255),
+    lastname VARCHAR(255),
+    date_of_birth DATE,
+    username VARCHAR(255),
+    password VARCHAR(30),
+    has_right BOOLEAN
+);
+
+CREATE TABLE movies (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(50),
+    picture_url VARCHAR(255)
+);
+
+CREATE TABLE watchlist (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    movie_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(ID) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES movies(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE type (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(50)
+);
+
+CREATE TABLE tag (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(50)
+);
+
+CREATE TABLE movie_tag (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    movie_ID INT,
+    tag_ID INT,
+    FOREIGN KEY (movie_ID) REFERENCES movies(ID) ON DELETE CASCADE,
+    FOREIGN KEY (tag_ID) REFERENCES tag(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE movie_type (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    movie_ID INT,
+    type_ID INT,
+    FOREIGN KEY (movie_ID) REFERENCES movies(ID) ON DELETE CASCADE,
+    FOREIGN KEY (type_ID) REFERENCES type(ID) ON DELETE CASCADE
+);
+
+
+INSERT INTO users (ID, firstname, lastname, date_of_birth, username, password, has_right) VALUES
+(1, 'Alice', 'Martin', '1995-06-12', 'alice95', 'pass123', TRUE),
+(2, 'Bob', 'Durand', '1992-03-22', 'bob92', 'secure456', FALSE),
+(3, 'Charlie', 'Lemoine', '1998-11-05', 'charlie98', 'hello789', TRUE),
+(4, 'David', 'Bernard', '1990-09-30', 'david90', 'davidpass', TRUE),
+(5, 'Emma', 'Dubois', '1993-07-18', 'emma93', 'emma456', FALSE),
+(6, 'François', 'Lefevre', '1989-02-25', 'francois89', 'fpass123', TRUE),
+(7, 'Gérard', 'Morel', '2000-12-01', 'gerard00', 'gm12345', FALSE),
+(8, 'Hélène', 'Simon', '1996-05-14', 'helene96', 'hssecure', TRUE),
+(9, 'Isabelle', 'Roux', '1994-08-09', 'isabelle94', 'isapass', TRUE),
+(10, 'Julien', 'Laurent', '1997-10-03', 'julien97', 'julien789', FALSE);
+
+INSERT INTO movies (ID, title, picture_url) VALUES
+(1, 'Novocaine', 'Novocaine.webp'),
+(2, 'Berlin Ete 42', 'Berlin Ete 42.webp'),
+(3, 'Aladin', 'Aladin.webp'),
+(4, 'Flow', 'Flow.webp'),
+(5, 'Les Bodins', 'Les Bodins.webp'),
+(6, 'Le roi lion', 'Le roi lion.webp'),
+(7, 'Mercato', 'Mercato.webp'),
+(8, 'Malcolm X', 'Malcolm X.webp'),
+(9, 'Avatar', 'Avatar.webp'),
+(10, 'Exodus Gods and Kings', 'Exodus Gods and Kings.webp'),
+(11, 'Le secret de Kheops', 'Le secret de Kheops.webp'),
+(12, 'Inestimable', 'Inestimable.webp');
+
+
+INSERT INTO watchlist (ID, user_id, movie_id) VALUES
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3),
+(4, 4, 4),
+(5, 5, 5),
+(6, 6, 6),
+(7, 7, 7),
+(8, 8, 8),
+(9, 9, 9),
+(10, 10, 10),
+(11, 1, 11),
+(12, 2, 12);
+
+
+INSERT INTO type (ID, description) VALUES
+(1, 'Action'),
+(2, 'Sci-Fi'),
+(3, 'Drama'),
+(4, 'Thriller'),
+(5, 'Horror'),
+(6, 'Comedy'),
+(7, 'Fantasy'),
+(8, 'Romance'),
+(9, 'Documentary'),
+(10, 'Adventure');
+
+INSERT INTO tag (ID, description) VALUES
+(1, 'Classic'),
+(2, 'New Release'),
+(3, 'Oscar Winner'),
+(4, 'Cult'),
+(5, 'Underrated'),
+(6, 'Indie'),
+(7, 'Blockbuster'),
+(8, 'Critically Acclaimed'),
+(9, 'Must Watch'),
+(10, 'Fan Favorite');
+
+INSERT INTO movie_tag (ID, movie_ID, tag_ID) VALUES
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3),
+(4, 4, 4),
+(5, 5, 5),
+(6, 6, 6),
+(7, 7, 7),
+(8, 8, 8),
+(9, 9, 9),
+(10, 10, 10),
+(11, 11, 1),
+(12, 12, 2);
+
+
+INSERT INTO movie_type (ID, movie_ID, type_ID) VALUES
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3),
+(4, 4, 4),
+(5, 5, 5),
+(6, 6, 6),
+(7, 7, 7),
+(8, 8, 8),
+(9, 9, 9),
+(10, 10, 10),
+(11, 11, 1),
+(12, 12, 2);

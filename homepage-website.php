@@ -15,6 +15,7 @@ $page = new Page();
 session_start();
 $app->handleUserWatchlistForEdit();
 
+$home->redirectIfNoLogin();
 ?>
 
 <head>
@@ -41,34 +42,35 @@ $app->handleUserWatchlistForEdit();
         </nav>
     </header>
     <section class="main-page">
+        <p class="welcome"> Welcome - <span><?= $home->getUsername();?></p>
+        <div class="container">
+            <div class="display-watch">
+                <?= $app->displayWatchlist(); ?>
+            </div>
+            <form method="get" class="search-form">
+                <label for="title">Title : <br><input type="text" id="title" name="title" placeholder="Inception"></label>
+                <div class="column">
+                    <fieldset>
+                        <legend>Types</legend>
+                        <?= $app->displayTag(); ?>
+                    </fieldset>
 
-        <p> Welcome - <?= $home->getUsername();?></p>
-
-        <?= $app->displayWatchlist(); ?>
-
-        <form method="get" class="search-form">
-            <label for="title">Title :</label>
-            <input type="text" id="title" name="title" placeholder="Inception">
-
-            <fieldset>
-                <legend>Types</legend>
-                <?= $app->displayTag(); ?>
-            </fieldset>
-
-            <fieldset>
-                <legend>Tags</legend>
-                <?= $app->displayType(); ?>
-            </fieldset>
-
-            <button type="submit">Search</button>
-        </form>
-
-        <?php
-        if (!empty($_GET['title']) || !empty($_GET['type']) || !empty($_GET['tag'])) {
-            $result = $app->displaySearchMovie();
-            echo $result !== "" ? $result : "<p>No movies find</p>";
-        }
-        ?>
+                    <fieldset>
+                        <legend>Tags</legend>
+                        <?= $app->displayType(); ?>
+                    </fieldset>
+                </div>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <div class="search">
+            <?php
+            if (!empty($_GET['title']) || !empty($_GET['type']) || !empty($_GET['tag'])) {
+                $result = $app->displaySearchMovie();
+                echo $result !== "" ? $result : "<p>No movies found</p>";
+            }
+            ?>
+        </div>
 
         /*
         Reste à faire :

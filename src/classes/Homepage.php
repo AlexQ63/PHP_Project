@@ -43,6 +43,15 @@ require_once 'Page.php';
         return htmlspecialchars($string);
     }
 
+    public function redirectIfNoLogin(): void
+    {
+        $result = isset($_SESSION['username']);
+        if (empty($result)) {
+            header("location: main-website.php");
+            exit;
+        }
+    }
+
     public function getSearchRequest(): array
     {
         if (!$this->page->getRequestGet()){
@@ -68,7 +77,7 @@ require_once 'Page.php';
 
             $html .= "<div class='movie'>";
             $html .= "<h3>{$title}</h3>";
-            $html .= "<img src='{$pictureUrl}' alt='{$title}'>";
+            $html .= "<img src='assets/website-picture/{$pictureUrl}' alt='{$title}'>";
             $html .= "</div>";
         }
         return $html;
@@ -84,7 +93,7 @@ require_once 'Page.php';
         return "
         <div class='movie'>
             <h2>$htmlTitle</h2>
-            <img src='$htmlPicture' alt='$htmlTitle'>
+            <img src='assets/website-picture/$htmlPicture' alt='$htmlTitle'>
             <p><a href='?movie=$movieId&title=$linkTitle&picture_url=$linkPicture&action=add'>Add to watchlist</a></p>
             <p><a href='?movie=$movieId&title=$linkTitle&picture_url=$linkPicture&action=remove'>Remove from watchlist</a></p>
         </div>
