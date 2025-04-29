@@ -17,15 +17,13 @@
 		○ Ajouter un film à sa watchlist avec les informations suivantes :
 			■ Titre
 			■ Image (upload local d'un fichier image)
-		○ Modifier les informations d'un film qu'il a ajouté.
 		○ Supprimer un film qu'il a ajouté.
 		○ Voir la liste des films qu'il a ajoutés.
 	● Ajouter un système de catégories ou de tags pour les films.
-	● Implémenter une pagination pour les listes de films.
 
 #### 3. Restrictions
 
-	● Un utilisateur ne doit voir que les films qu'il a créés.
+	● Un utilisateur ne doit voir que les films qu'il a dans sa watchlist.
 	● Les données doivent être stockées dans une base de données locale (par exemple,
 	MySQL).
 
@@ -56,7 +54,7 @@
 #### 1. Fonctionnalités
 	
 	○ Toutes les fonctionnalités requises sont implémentées.
-	○ Les utilisateurs peuvent ajouter, modifier, supprimer et afficher leurs films.
+	○ Les utilisateurs peuvent ajouter, supprimer et afficher leurs films.
 
 #### 2. Qualité du code
 	
