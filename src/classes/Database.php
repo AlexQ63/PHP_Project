@@ -113,10 +113,17 @@ class Database
         return true;
     }
 
-    public function changeUserToAdmin($username): void
+    public function adminGetUser(): array
     {
-        $statement = $this->connexion->prepare("UPDATE users SET has_right = 1 WHERE username = :username");
+        $statement = $this->connexion->query("SELECT username, has_right FROM users");
+        return $statement->fetchAll();
+    }
+
+    public function changeUserRights($username, $isAdmin): void
+    {
+        $statement = $this->connexion->prepare("UPDATE users SET has_right = :is_admin WHERE username = :username");
         $statement->bindValue(":username", $username);
+        $statement->bindValue(":is_admin", $isAdmin, PDO::PARAM_INT);
         $statement->execute();
     }
 
@@ -295,18 +302,6 @@ class Database
     public function showAllTypeOrTag(string $table): array
     {
         $statement = $this->connexion->query("SELECT description FROM `$table`");
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
-    }
-//Maybe useless
-    public function showMovie(string $value): array
-    {
-        $statement = $this->connexion->prepare("
-            SELECT movies.title, movies.picture_url 
-            FROM movies 
-            WHERE id = :value
-            ");
-        $statement->bindValue(':value', $value);
-        $statement->execute();
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 

@@ -22,6 +22,10 @@ a {
     font-size: 1.5rem;
 }
 
+body{
+    background-color: #4B433A;
+}
+
 .link-style {
     background: none;
     border: none;
@@ -171,6 +175,76 @@ a {
 .main-page .search .movie img{
     height: 255px;
     width: 210px;
+}
+
+/* ============================= Admin form ============================= */
+
+.form-admin {
+    background-color: #f8f4e3;
+    padding: 2rem;
+    border-radius: 15px;
+    width: fit-content;
+    margin: 2rem auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-admin .admin-user {
+    overflow-x: auto; /* Gère le cas où la table serait trop large */
+}
+
+.form-admin .admin-user table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.form-admin .admin-user thead th {
+    background-color: #e0c7a5;
+    color: #333;
+    font-size: 1.2rem;
+    padding: 12px 15px;
+    text-align: center;
+}
+
+.form-admin .admin-user tbody td {
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 15px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.form-admin .admin-user tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.form-admin .admin-user select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fafafa;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.form-admin .admin-user button {
+    margin-top: 1.5rem;
+    padding: 12px 25px;
+    background-color: #1C4B7E;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
+}
+
+.form-admin .admin-user button:hover {
+    background-color: #163b64;
 }
 
     /* ============================= FOOTER ============================= */

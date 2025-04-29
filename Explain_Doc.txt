@@ -1,0 +1,21 @@
+Voici la doc pour une prise en main du projet.
+
+Lorsque vous commencez en téléchargeant le dossier, il vous faudra au préalable avoir docker et un superbe IDE (type : PHP storm).
+Il vous faudra faire un docker-compose up -d dans le terminal après vous êtes déplacés dans le dossier "config" via la commande "cd .\config"
+
+Une fois fait, vous pourrez aller à droite de votre IDE, et appuyer sur l'icône de "stockage" intitulé Database. Une page va s'ouvrir.
+Il faudra ensuite aller dans la petite croix "New" -> Data Source -> MariaDB. Une nouvelle page va s'ouvrir.
+Sur cette nouvelle page, il vous faudra remplir certains champs : Host -> vous pouvez laisser Localhost. Port -> vous allez mettre 4455
+et User : root. Vous laissez les autres champs par défaut !
+
+Après, vous allez avoir une ligne "@localhost" juste en bas et vous allez cliquer à droite de "@localhost" où il y a " ... " et ici, vous allez sélectionné : Watchlist.
+
+Avec ça, vous allez avoir accès à la Database.
+
+Dans le cas où vous n'avez pas accès à la base de donnés, vous pouvez utiliser celle qui est dans "/Config/Insert BDD.txt", vous avez un accès à la base de données à la main.
+
+Si la base de données fournit avec le projet ne fonctionne pas, vous avez un fichier à insérer dans le dossier config.
+
+Pour l'ensemble des users crées, veuillez utiliser le mot de passe : " P@ssw0rd ".
+
+Amusez-vous bien avec la watchlist.

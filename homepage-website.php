@@ -1,21 +1,28 @@
 <?php
 
 use classes\Appmanager;
+use classes\Database;
 use classes\Homepage;
 use classes\Page;
 
 require_once "src/classes/Appmanager.php";
 require_once "src/classes/Page.php";
 require_once "src/classes/Homepage.php";
+require_once "src/classes/Database.php";
 
 $home = new Homepage();
 $app = new Appmanager();
 $page = new Page();
+$data = new Database();
 
 session_start();
 $app->handleUserWatchlistForEdit();
 
 $home->redirectIfNoLogin();
+
+$_SESSION['has_right'] = $data->userIsAdmin($home->getUsername());
+
+$home->setUserToAdmin();
 ?>
 
 <head>
@@ -42,7 +49,7 @@ $home->redirectIfNoLogin();
         </nav>
     </header>
     <section class="main-page">
-        <p class="welcome"> Welcome - <span><?= $home->getUsername();?></p>
+        <p class="welcome"> Welcome - <span><?= $home->getUsername();?></span></p>
         <div class="container">
             <div class="display-watch">
                 <?= $app->displayWatchlist(); ?>
@@ -71,20 +78,40 @@ $home->redirectIfNoLogin();
             }
             ?>
         </div>
-
-        /*
-        Reste à faire :
-        -Upload de media
-        -Pagination à faire
-        -HTML / CSS propre de la homepage
-        -Mise en page du doc de présentation : refaire la BDD suivant le html / css page une.
-        Let's go, dernière ligne droite !
-
-        //Pour les upload de média, on va pouvoir faire une boucle avec un static interne qui va bouger suivant les indentations de la fonction. On peut s'en servir pour renommer les fichiers et travailler avec.
-
-        //Pour la pagination, il va falloir retravailler les méthodes SQL (on peut faire la concatenation -> voir même reprendre les requêtes dans une fonction qui va être dynamique ou alors juste reprendre les requêtes, à voir le mieux). Dans l'idée, on va garder une limite de 10 par page.
-        */
     </section>
+    <?php if ($_SESSION['has_right']){ ?>
+    <section class="form-admin">
+        <div class="admin-user">
+            <form method="post">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>IsAdmin</th>
+                        <th>Modify content</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($data->adminGetUser() as $user) : ?>
+                        <tr>
+                            <td><?= htmlspecialchars($user['username']) ?></td>
+                            <td><?= $user['has_right'] ? 'Admin' : 'Utilisateur' ?></td>
+                            <td>
+                                <select name="admin-user[<?= $user['username'] ?>]">
+                                    <option value="0" <?= $user['has_right'] ? '' : 'selected' ?>>Lambda user</option>
+                                    <option value="1" <?= $user['has_right'] ? 'selected' : '' ?>>Admin</option>
+                                </select>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <button type="submit" name="target-username" value="<?= $user['username']; ?>">Applicate</button>
+            </form>
+        </div>
+    </section>
+    <?php } ?>
 </body>
 <footer>
     <section class="main-footer">

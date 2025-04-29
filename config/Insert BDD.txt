@@ -52,16 +52,17 @@ CREATE TABLE movie_type (
 
 
 INSERT INTO users (ID, firstname, lastname, date_of_birth, username, password, has_right) VALUES
-(1, 'Alice', 'Martin', '1995-06-12', 'alice95', 'pass123', TRUE),
-(2, 'Bob', 'Durand', '1992-03-22', 'bob92', 'secure456', FALSE),
-(3, 'Charlie', 'Lemoine', '1998-11-05', 'charlie98', 'hello789', TRUE),
-(4, 'David', 'Bernard', '1990-09-30', 'david90', 'davidpass', TRUE),
-(5, 'Emma', 'Dubois', '1993-07-18', 'emma93', 'emma456', FALSE),
-(6, 'François', 'Lefevre', '1989-02-25', 'francois89', 'fpass123', TRUE),
-(7, 'Gérard', 'Morel', '2000-12-01', 'gerard00', 'gm12345', FALSE),
-(8, 'Hélène', 'Simon', '1996-05-14', 'helene96', 'hssecure', TRUE),
-(9, 'Isabelle', 'Roux', '1994-08-09', 'isabelle94', 'isapass', TRUE),
-(10, 'Julien', 'Laurent', '1997-10-03', 'julien97', 'julien789', FALSE);
+(11, 'Paul', 'Jea', '1222-12-12', 'Paul147', '$2y$12$bMpUf3HWV7S7CrcdaTBxT.Ajq8DUSr3Qw98lYnQJaIIjPT.sGsKg.', FALSE),
+(12, 'Paul', 'Jean', '1222-12-12', 'Paul148', '$2y$12$TswvPaGsCsCKL26vzxBL.e9C1isEdSOu3wtxY6VCV5uCfFipEcGmC', FALSE),
+(13, 'Paul', 'Jeannot', '1222-12-12', 'Paul149', '$2y$12$KwzXh9UdHYqFlBAfF5G6s.eLALd9IS/B2gQmwUArKNGSfVbYb3jQy', FALSE),
+(14, 'Paul', 'Jeannot', '1222-12-12', 'Paul150', '$2y$12$eknuxKAX1iNfkfKL/e4V.ud0YYfJ4CNN47qMl9RT3kq5EP1TUYB4a', FALSE),
+(15, 'Paul', 'Jeannot', '1222-12-12', 'Paul151', '$2y$12$BU7kQ1pHhRR8eHegfF8kceeXmYDMHV1ioHoUNXwdlOBVK6C3hEJr6', FALSE),
+(16, 'Popol', 'Gros', '1002-12-12', 'Paul152', '$2y$12$RWAWQsYZnHFpzjTNf2mRKOUldQnTSQ.m/31seHphAARAOqQjg4KFa', FALSE),
+(17, 'Jean', 'Marius', '1995-01-01', 'Mimir63', '$2y$12$f7XIjl.IMl10d7wV26022uwxanKrRG0WBkb36NekEIPkf5nxVsmAa', TRUE),
+(18, 'Pierre', 'Paul Paul', '1400-05-01', 'Lancien01', '$2y$12$9y8rBH.scTsIVkF2reDFsO321Re6lhpoauzKU3047VIIF.Ufb)fEHS', TRUE),
+(19, 'Rene', 'De la Roche', '1402-05-04', 'Lancien02', '$2y$12$Kt71pQdQBaK68jD1EmiIgOXtmgX0DIOkl0HzuRKvs1GcIGnzVGSY2', TRUE),
+(20, 'Jacques', 'Chirac', '1932-11-29', 'President01', '$2y$12$ns2bifE07Wmy/l7PTlbtzOgEp.11XoFSsIh.X2yhQyl71JUfy9EkC', FALSE),
+(21, 'Michael', 'Jackson', '1958-08-29', 'Jsuispasmort', '$2y$12$tCP6LYU6Ux5cKhnFhWZzrejW.0nrkJhdoMf1/RqmPK0qdtHcZmTzS', TRUE);
 
 INSERT INTO movies (ID, title, picture_url) VALUES
 (1, 'Novocaine', 'Novocaine.webp'),

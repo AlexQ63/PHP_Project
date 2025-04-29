@@ -118,4 +118,14 @@ require_once 'Page.php';
 
         return $htmlOutput;
     }
+
+    public function setUserToAdmin(): void
+    {
+        if (isset($_POST['admin-user']) && is_array($_POST['admin-user'])) {
+            foreach ($_POST['admin-user'] as $username => $isAdmin) {
+                $this->data->changeUserRights($username, $isAdmin);
+            }
+        }
+    }
+    
 }

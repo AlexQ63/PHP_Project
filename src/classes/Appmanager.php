@@ -58,27 +58,6 @@ require_once "Page.php";
         }
     }
 
-    public function adminSetUserToAdmin(): void
-    {
-        try{
-            $selfUsername = $this->home->getUsername();
-            if (!$this->data->userIsAdmin($selfUsername)){
-                return;
-            }
-
-            $targetUsername = $this->home->getTargetUsername();
-
-            if (empty($targetUsername)){
-                return;
-            }
-
-            $this->data->changeUserToAdmin($targetUsername);
-        } catch (PDOException $e){
-            echo $e->getMessage();
-        }
-    }
-
-
     public function handleCreateAccount(): void
     {
         try {
